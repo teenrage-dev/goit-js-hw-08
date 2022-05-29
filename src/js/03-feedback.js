@@ -1,3 +1,5 @@
+import throttle from 'lodash.throttle';
+
 const refs = {
     form: document.querySelector('.feedback-form'),
     textarea: document.querySelector('.feedback-form textarea'),
@@ -7,41 +9,39 @@ const refs = {
 const LOCALSTORAGE_KEY = "feedback-form-state";
 
 refs.form.addEventListener("submit", onFormSubmit);
-refs.form.addEventListener("input", onTextareaInput)
+refs.form.addEventListener("input", throttle(onTextareaInput, 500))
 
 populateTextarea();
 
 function onFormSubmit(evt) {
     evt.preventDefault();
-    refs.form.reset();
     console.log(JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)));
     localStorage.removeItem(LOCALSTORAGE_KEY);
+    refs.form.reset();
 }
 
-function onTextareaInput(evt) {
+function onTextareaInput() {
     const message = {
-        email: evt.target.value,
-        message: evt.target.value,
+        email: refs.input.value,
+        message: refs.textarea.value,
     };
-
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(message));
 }
 
 function populateTextarea() {
     try{
-        const savedMessage = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+        const savedMessage = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)) || ``;
         if (savedMessage){
             const getMessage = savedMessage.message;
-            const getemail = savedMessage.email;
+            const getEmail = savedMessage.email;
             refs.textarea.value = getMessage;
-            refs.input.value = getemail;
+            refs.input.value = getEmail;
         }
     }
     catch{
         console.log("error");
     }
-
 }
 
 
-// Залишилосчь зробити так щоб в локал сторедж повертало емай   л занчення емайлу інпута, а message значення textare message.
+// Залишилосчь зробити так щоб в локал сторедж повертало емайл занчення емайлу інпута, а message значення textare message.
