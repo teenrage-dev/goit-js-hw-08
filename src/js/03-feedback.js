@@ -44,4 +44,3 @@ function populateTextarea() {
 }
 
 
-// Залишилосчь зробити так щоб в локал сторедж повертало емайл занчення емайлу інпута, а message значення textare message.
